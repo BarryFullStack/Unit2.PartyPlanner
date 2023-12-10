@@ -41,16 +41,67 @@ function renderEvents() {
         const eventInfo = document.createElement("li");
         eventInfo.classList.add("event");
         eventInfo.innerHTML = `
-          <h2>${event.name}</h2>
-          <time datetime="${event.datetime}">
-          <h3>${event.location}</h3>
+          <h1>${event.name}</h1>
+          <time datetime ="${new Date(event.date).toString()}"></>
+          <h2>${event.location}</h2>
+          <h3>${new Date(event.date).toString()}</h3>
           <p>${event.description}</p>
         `;
+        //add delete button
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        eventInfo.append(deleteButton);
+        //add event listener for button click
+        deleteButton.addEventListener("click", () =>{
+            deleteEvent(event.id)
+        });
+        addEventForm.reset();
         return eventInfo;
       });
       eventList.replaceChildren(...eventInformations);
 }
 
 //ask API to create new event based on form data
+async function addEvents(e) {
+    e.preventDefault();
+    try{
+      //debugger
+      const response = await fetch (API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({ 
+          name:addEventForm.name.value,
+          description: addEventForm.description.value,
+          date: new Date(addEventForm.date.value).toISOString(),
+          location: addEventForm.location.value,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to locate event.");
+      }
+  
+      render();
+  
+    } catch(error) {
+      console.error(error);
+    }
+  
+  }
 
 //ask API to delete event based on button click
+async function deleteEvent(id) {
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to locate event.");
+          }
+
+        render();
+    } catch(error) {
+      console.error(error);
+    }
+}
