@@ -8,7 +8,6 @@ const state = {
 };
 
 //set up references
-//correct all names
 const eventList = document.querySelector("#events");
 const addEventForm = document.querySelector("#addEvent");
 addEventForm.addEventListener("submit", addEvents);
@@ -41,10 +40,10 @@ function renderEvents() {
         const eventInfo = document.createElement("li");
         eventInfo.classList.add("event");
         eventInfo.innerHTML = `
-          <h1>${event.name}</h1>
+          <h2>${event.name}</h2>
           <time datetime ="${new Date(event.date).toString()}"></>
-          <h2>${event.location}</h2>
-          <h3>${new Date(event.date).toString()}</h3>
+          <h3>Location: ${event.location}</h3>
+          <h3>Date/Time: ${new Date(event.date).toString()}</h3>
           <p>${event.description}</p>
         `;
         //add delete button
@@ -65,7 +64,6 @@ function renderEvents() {
 async function addEvents(e) {
     e.preventDefault();
     try{
-      //debugger
       const response = await fetch (API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json"},
